@@ -4,6 +4,8 @@ package br.com.fiap.lanchonete.interfaceadapters.controllers;
 import java.util.List;
 
 
+import br.com.fiap.lanchonete.core.entities.enums.StatusPedido;
+import br.com.fiap.lanchonete.infrastructure.exceptions.ObjectNotFoundException;
 import br.com.fiap.lanchonete.infrastructure.exceptions.RegraNegocioException;
 import br.com.fiap.lanchonete.core.usecases.services.PedidoServicePort;
 import br.com.fiap.lanchonete.core.usecases.services.impl.PedidoServiceImpl;
@@ -16,6 +18,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.http.ResponseEntity;
@@ -49,6 +52,47 @@ public class PedidoController {
     public ResponseEntity<List<PedidoResponseDto>> getAllPedidos() {
         List<PedidoResponseDto> pedidos = pedidoService.findAllComProdutos();
         return ResponseEntity.ok(pedidos);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Realiza a busca de Pedido por id", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisicao invalidos"),
+            @ApiResponse(responseCode = "400", description = "Parametros invalidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a busca de dados")
+    })
+    public ResponseEntity<PedidoResponseDto>findById(@PathVariable String id) {
+
+        try {
+            PedidoResponseDto obj = pedidoService.findById(id);
+            return ResponseEntity.ok().body(obj);
+
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException("Pedido não encontrado pelo Id: " + id);
+
+        }
+
+    }
+
+    @GetMapping("/{id}/status")
+    @Operation(summary = "Informa o Status de Pedido por id", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisicao invalidos"),
+            @ApiResponse(responseCode = "400", description = "Parametros invalidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a busca de dados")
+    })
+    public ResponseEntity<StatusPedido> getStatusFindById(@PathVariable String id) {
+        try {
+            PedidoResponseDto obj = pedidoService.findById(id);
+            return ResponseEntity.ok().body(obj.getStatus());
+
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException("Status não pode ser informado devido Pedido não ter sido encontrado pelo Id: " + id);
+
+        }
+
     }
 
 }

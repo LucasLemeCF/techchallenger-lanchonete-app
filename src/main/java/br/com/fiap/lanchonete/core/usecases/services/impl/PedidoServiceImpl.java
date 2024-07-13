@@ -99,4 +99,9 @@ public class PedidoServiceImpl implements PedidoServicePort {
     public List<PedidoResponseDto> findAllComProdutos() {
         return pedidoRepository.findAllComProdutos();
     }
+
+    @Override
+    public PedidoResponseDto findById(String id) {
+        return pedidoRepository.findById(id);
+    }
 }
