@@ -1,8 +1,12 @@
 package br.com.fiap.lanchonete.core.usecases.services.impl;
 
+import br.com.fiap.lanchonete.core.entities.PedidoEntity;
+import br.com.fiap.lanchonete.core.entities.enums.StatusPedido;
 import br.com.fiap.lanchonete.core.usecases.services.ClienteServicePort;
 import br.com.fiap.lanchonete.core.usecases.services.PedidoServicePort;
 import br.com.fiap.lanchonete.core.usecases.services.ProdutoServicePort;
+import br.com.fiap.lanchonete.infrastructure.database.repositories.PedidoJpaRepository;
+import br.com.fiap.lanchonete.infrastructure.exceptions.ObjectNotFoundException;
 import br.com.fiap.lanchonete.infrastructure.exceptions.RegraNegocioException;
 import br.com.fiap.lanchonete.interfaceadapters.dtos.PedidoDto;
 import br.com.fiap.lanchonete.interfaceadapters.dtos.PedidoResponseDto;
@@ -20,11 +24,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PedidoServiceImpl implements PedidoServicePort {
 
     private final PedidoRepositoryPort pedidoRepository;
+    private final PedidoJpaRepository jpaRepository;
     private final ProdutoServicePort produtoService;
     private final ClienteServicePort clienteService;
 
-    public PedidoServiceImpl(PedidoRepositoryPort pedidoRepository, ClienteRepositoryPort clienteRepository, ProdutoRepositoryPort produtoRepository) {
+    public PedidoServiceImpl(PedidoRepositoryPort pedidoRepository, PedidoJpaRepository jpaRepository, ClienteRepositoryPort clienteRepository, ProdutoRepositoryPort produtoRepository) {
         this.pedidoRepository = pedidoRepository;
+        this.jpaRepository = jpaRepository;
         this.clienteService = new ClienteServiceImpl(clienteRepository);
         this.produtoService = new ProdutoServiceImpl(produtoRepository);
     }
@@ -104,4 +110,12 @@ public class PedidoServiceImpl implements PedidoServicePort {
     public PedidoResponseDto findById(String id) {
         return pedidoRepository.findById(id);
     }
+
+    @Override
+    public void updateStatus(String id, StatusPedido statusAtualizado) {
+        PedidoEntity pedidoEntity = jpaRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException("Pedido não encontrado! Id: " + id));
+        pedidoEntity.setStatus(statusAtualizado);
+
+    }
+
 }

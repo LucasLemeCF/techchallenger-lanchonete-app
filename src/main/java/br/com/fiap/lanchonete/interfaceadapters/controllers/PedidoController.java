@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import br.com.fiap.lanchonete.core.entities.enums.StatusPedido;
+import br.com.fiap.lanchonete.infrastructure.database.repositories.PedidoJpaRepository;
 import br.com.fiap.lanchonete.infrastructure.exceptions.ObjectNotFoundException;
 import br.com.fiap.lanchonete.infrastructure.exceptions.RegraNegocioException;
 import br.com.fiap.lanchonete.core.usecases.services.PedidoServicePort;
@@ -30,8 +31,8 @@ import org.springframework.web.bind.annotation.*;
 public class PedidoController {
 
     private final PedidoServicePort pedidoService;
-    private PedidoController(PedidoRepositoryPort pedidoRepository, ClienteRepositoryPort clienteRepository, ProdutoRepositoryPort produtoRepository) {
-        this.pedidoService = new PedidoServiceImpl(pedidoRepository, clienteRepository, produtoRepository);
+    private PedidoController(PedidoRepositoryPort pedidoRepository, ClienteRepositoryPort clienteRepository, ProdutoRepositoryPort produtoRepository, PedidoJpaRepository jpaRepository) {
+        this.pedidoService = new PedidoServiceImpl(pedidoRepository, jpaRepository, clienteRepository, produtoRepository);
     }
 
     @PostMapping
@@ -93,6 +94,16 @@ public class PedidoController {
 
         }
 
+    }
+
+    @PutMapping("/{id}/status")
+    @Operation(summary = "Realiza a atualização de Status de Pedido", method = "PUT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Status do Pedido atualizado com sucesso")
+    })
+    public ResponseEntity<Void> atualizarStatus(@PathVariable String id, @RequestParam StatusPedido status) {
+        pedidoService.updateStatus(id, status);
+        return ResponseEntity.noContent().build();
     }
 
 }
