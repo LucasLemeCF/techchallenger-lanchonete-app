@@ -115,7 +115,7 @@ public class PedidoServiceImpl implements PedidoServicePort {
     public void updateStatus(String id, StatusPedido statusAtualizado) {
         PedidoEntity pedidoEntity = jpaRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException("Pedido não encontrado! Id: " + id));
         pedidoEntity.setStatus(statusAtualizado);
-
+        jpaRepository.save(pedidoEntity);
     }
 
 }

@@ -10,6 +10,7 @@ import br.com.fiap.lanchonete.infrastructure.exceptions.ObjectNotFoundException;
 import br.com.fiap.lanchonete.infrastructure.exceptions.RegraNegocioException;
 import br.com.fiap.lanchonete.core.usecases.services.PedidoServicePort;
 import br.com.fiap.lanchonete.core.usecases.services.impl.PedidoServiceImpl;
+import br.com.fiap.lanchonete.interfaceadapters.dtos.PedidoCheckoutDto;
 import br.com.fiap.lanchonete.interfaceadapters.dtos.PedidoDto;
 import br.com.fiap.lanchonete.interfaceadapters.dtos.PedidoResponseDto;
 import br.com.fiap.lanchonete.dataproviders.repositories.ports.ClienteRepositoryPort;
@@ -101,9 +102,13 @@ public class PedidoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Status do Pedido atualizado com sucesso")
     })
-    public ResponseEntity<Void> atualizarStatus(@PathVariable String id, @RequestParam StatusPedido status) {
+    public ResponseEntity<PedidoCheckoutDto> atualizarStatus(@PathVariable String id, @RequestParam StatusPedido status) {
         pedidoService.updateStatus(id, status);
-        return ResponseEntity.noContent().build();
+        if(status == StatusPedido.PRONTO) {
+            return ResponseEntity.ok(new PedidoCheckoutDto(pedidoService.findById(id).getId()));
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
 }
