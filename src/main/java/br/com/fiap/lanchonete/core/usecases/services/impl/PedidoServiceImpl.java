@@ -1,5 +1,6 @@
 package br.com.fiap.lanchonete.core.usecases.services.impl;
 
+import br.com.fiap.lanchonete.core.entities.ClienteEntity;
 import br.com.fiap.lanchonete.core.entities.PedidoEntity;
 import br.com.fiap.lanchonete.core.entities.enums.StatusPedido;
 import br.com.fiap.lanchonete.core.usecases.services.ClienteServicePort;
@@ -8,9 +9,7 @@ import br.com.fiap.lanchonete.core.usecases.services.ProdutoServicePort;
 import br.com.fiap.lanchonete.infrastructure.database.repositories.PedidoJpaRepository;
 import br.com.fiap.lanchonete.infrastructure.exceptions.ObjectNotFoundException;
 import br.com.fiap.lanchonete.infrastructure.exceptions.RegraNegocioException;
-import br.com.fiap.lanchonete.interfaceadapters.dtos.PedidoDto;
-import br.com.fiap.lanchonete.interfaceadapters.dtos.PedidoResponseDto;
-import br.com.fiap.lanchonete.interfaceadapters.dtos.ProdutoDto;
+import br.com.fiap.lanchonete.interfaceadapters.dtos.*;
 import br.com.fiap.lanchonete.dataproviders.repositories.ports.ClienteRepositoryPort;
 import br.com.fiap.lanchonete.dataproviders.repositories.ports.PedidoRepositoryPort;
 import br.com.fiap.lanchonete.dataproviders.repositories.ports.ProdutoRepositoryPort;
@@ -35,68 +34,7 @@ public class PedidoServiceImpl implements PedidoServicePort {
         this.produtoService = new ProdutoServiceImpl(produtoRepository);
     }
 
-    @Override
-    public PedidoResponseDto save(PedidoDto pedidoDto) {
-        BigDecimal valorPedido = BigDecimal.ZERO;
-        AtomicInteger comboNum = new AtomicInteger(1);
 
-        boolean clienteInformado = pedidoDto.getCpfCliente() != null && !pedidoDto.getCpfCliente().isEmpty();
-        var clienteEntity = clienteInformado ? clienteService.findByCpfCliente(pedidoDto.getCpfCliente()) : null;
-
-        if (clienteInformado && clienteEntity == null){
-            throw new RegraNegocioException("Cliente não localizado");
-        }
-        
-        for (var p : Optional.ofNullable(pedidoDto.getProdutos()).orElse(Collections.emptyList())){
-            Optional<ProdutoDto> lancheOptional = p.possuiLanche() ? produtoService.findByIdProduto(p.getLanche().getId()) : Optional.empty();
-            Optional<ProdutoDto> sobremesaOptional = p.possuiSobremesa() ? produtoService.findByIdProduto(p.getSobremesa().getId()) : Optional.empty();
-            Optional<ProdutoDto> bebidaOptional = p.possuiBebida() ? produtoService.findByIdProduto(p.getBebida().getId()) : Optional.empty();
-            Optional<ProdutoDto> acompanhamentoOptional = p.possuiAcompanhamento() ? produtoService.findByIdProduto(p.getAcompanhamento().getId()) : Optional.empty();
-            
-            boolean lancheValido = !p.possuiLanche() || (lancheOptional.isPresent() && lancheOptional.get().isLanche());
-
-            boolean sobremesaValido = !p.possuiSobremesa() || (sobremesaOptional.isPresent() && sobremesaOptional.get().isSobremesa());
-
-            boolean bebidaValido = !p.possuiBebida() || (bebidaOptional.isPresent() && bebidaOptional.get().isBebida());
-
-            boolean acompanhamentoValido = !p.possuiAcompanhamento() || (acompanhamentoOptional.isPresent() && acompanhamentoOptional.get().isAcompanhamento());
-
-            if (!(p.possuiLanche() || p.possuiSobremesa() || p.possuiBebida() || p.possuiAcompanhamento())){
-                throw new RegraNegocioException("É obrigatório ao menos um item no combo");
-            }
-
-            if (!(lancheValido && sobremesaValido && bebidaValido && acompanhamentoValido)){
-                throw new RegraNegocioException("Produtos inválidos ou inativos");
-            }
-
-            if (p.possuiLanche()){
-                p.getLanche().setPreco(lancheOptional.get().getPreco());
-                valorPedido = valorPedido.add(p.getLanche().getPreco());
-            }
-
-            if (p.possuiSobremesa()){
-                p.getSobremesa().setPreco(sobremesaOptional.get().getPreco());
-                valorPedido = valorPedido.add(p.getSobremesa().getPreco());
-            }
-
-            if (p.possuiBebida()){
-                p.getBebida().setPreco(bebidaOptional.get().getPreco());
-                valorPedido = valorPedido.add(p.getBebida().getPreco());
-            }
-
-            if (p.possuiAcompanhamento()){
-                p.getAcompanhamento().setPreco(acompanhamentoOptional.get().getPreco());
-                valorPedido = valorPedido.add(p.getAcompanhamento().getPreco());
-            }
-
-            p.setComboNum(comboNum.getAndIncrement());
-
-        }
-
-        pedidoDto.setValor(valorPedido);
-
-        return pedidoRepository.save(pedidoDto);
-    }
     @Override
     public List<PedidoDto> findAll() {
         return pedidoRepository.findAll();
@@ -117,5 +55,78 @@ public class PedidoServiceImpl implements PedidoServicePort {
         pedidoEntity.setStatus(statusAtualizado);
         jpaRepository.save(pedidoEntity);
     }
+
+    @Override
+    public PedidoResponseDto save(PedidoDto pedidoDto) {
+        BigDecimal valorPedido = BigDecimal.ZERO;
+        AtomicInteger comboNum = new AtomicInteger(1);
+
+        var clienteEntity = validarCliente(pedidoDto);
+
+        for (var p : Optional.ofNullable(pedidoDto.getProdutos()).orElse(Collections.emptyList())) {
+            ComboDto combo = ComboDto.builder().build();
+            var lancheOptional = combo.possuiLanche() ? produtoService.findByIdProduto(combo.getLanche().getId()) : Optional.empty();
+            var sobremesaOptional = combo.possuiSobremesa() ? produtoService.findByIdProduto(combo.getSobremesa().getId()) : Optional.empty();
+            var bebidaOptional = combo.possuiBebida() ? produtoService.findByIdProduto(combo.getBebida().getId()) : Optional.empty();
+            var acompanhamentoOptional = combo.possuiAcompanhamento() ? produtoService.findByIdProduto(combo.getAcompanhamento().getId()) : Optional.empty();
+
+            validarProdutos(combo, (Optional<ProdutoDto>) lancheOptional, (Optional<ProdutoDto>) sobremesaOptional, (Optional<ProdutoDto>) bebidaOptional, (Optional<ProdutoDto>) acompanhamentoOptional);
+
+            valorPedido = calcularValorPedido(combo, (Optional<ProdutoDto>) lancheOptional, (Optional<ProdutoDto>) sobremesaOptional, (Optional<ProdutoDto>) bebidaOptional, (Optional<ProdutoDto>) acompanhamentoOptional, valorPedido);
+            combo.setComboNum(comboNum.getAndIncrement());
+        }
+
+        pedidoDto.setValor(valorPedido);
+        return pedidoRepository.save(pedidoDto);
+    }
+
+    private ClienteDto validarCliente(PedidoDto pedidoDto) {
+        boolean clienteInformado = pedidoDto.getCpfCliente() != null && !pedidoDto.getCpfCliente().isEmpty();
+        var clienteEntity = clienteInformado ? clienteService.findByCpfCliente(pedidoDto.getCpfCliente()) : null;
+
+        if (clienteInformado && clienteEntity == null) {
+            throw new RegraNegocioException("Cliente não localizado");
+        }
+        return clienteEntity;
+    }
+
+    private void validarProdutos(ComboDto combo, Optional<ProdutoDto> lancheOptional, Optional<ProdutoDto> sobremesaOptional, Optional<ProdutoDto> bebidaOptional, Optional<ProdutoDto> acompanhamentoOptional) {
+        boolean lancheValido = !combo.possuiLanche() || (lancheOptional.isPresent() && lancheOptional.get().isLanche());
+        boolean sobremesaValido = !combo.possuiSobremesa() || (sobremesaOptional.isPresent() && sobremesaOptional.get().isSobremesa());
+        boolean bebidaValido = !combo.possuiBebida() || (bebidaOptional.isPresent() && bebidaOptional.get().isBebida());
+        boolean acompanhamentoValido = !combo.possuiAcompanhamento() || (acompanhamentoOptional.isPresent() && acompanhamentoOptional.get().isAcompanhamento());
+
+        if (!(combo.possuiLanche() || combo.possuiSobremesa() || combo.possuiBebida() || combo.possuiAcompanhamento())) {
+            throw new RegraNegocioException("É obrigatório ao menos um item no combo");
+        }
+
+        if (!(lancheValido && sobremesaValido && bebidaValido && acompanhamentoValido)) {
+            throw new RegraNegocioException("Produtos inválidos ou inativos");
+        }
+    }
+
+    private BigDecimal calcularValorPedido(ComboDto combo, Optional<ProdutoDto> lancheOptional, Optional<ProdutoDto> sobremesaOptional, Optional<ProdutoDto> bebidaOptional, Optional<ProdutoDto> acompanhamentoOptional, BigDecimal valorPedido) {
+        if (combo.possuiLanche()) {
+            combo.getLanche().setPreco(lancheOptional.get().getPreco());
+            valorPedido = valorPedido.add(combo.getLanche().getPreco());
+        }
+
+        if (combo.possuiSobremesa()) {
+            combo.getSobremesa().setPreco(sobremesaOptional.get().getPreco());
+            valorPedido = valorPedido.add(combo.getSobremesa().getPreco());
+        }
+
+        if (combo.possuiBebida()) {
+            combo.getBebida().setPreco(bebidaOptional.get().getPreco());
+            valorPedido = valorPedido.add(combo.getBebida().getPreco());
+        }
+
+        if (combo.possuiAcompanhamento()) {
+            combo.getAcompanhamento().setPreco(acompanhamentoOptional.get().getPreco());
+            valorPedido = valorPedido.add(combo.getAcompanhamento().getPreco());
+        }
+        return valorPedido;
+    }
+
 
 }
