@@ -1,8 +1,10 @@
 package br.com.fiap.lanchonete.interfaceadapters.dtos;
 
+import lombok.Getter;
+
 import java.math.BigDecimal;
 
-
+@Getter
 public class PedidoProdutoDto {
 
     private Integer id;
@@ -10,8 +12,6 @@ public class PedidoProdutoDto {
     private ProdutoDto produto;
     private BigDecimal preco;
     private Integer comboNum;
-
-    
     
     public PedidoProdutoDto(){}
 
@@ -31,40 +31,20 @@ public class PedidoProdutoDto {
         this.comboNum = comboNum;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getPedido() {
-        return pedido;
     }
 
     public void setPedido(String pedido) {
         this.pedido = pedido;
     }
 
-    public ProdutoDto getProduto() {
-        return produto;
-    }
-
     public void setProduto(ProdutoDto produto) {
         this.produto = produto;
     }
 
-    public BigDecimal getPreco() {
-        return preco;
-    }
-
     public void setPreco(BigDecimal preco) {
         this.preco = preco;
-    }
-
-    public Integer getComboNum() {
-        return comboNum;
     }
 
     public void setComboNum(Integer comboNum) {

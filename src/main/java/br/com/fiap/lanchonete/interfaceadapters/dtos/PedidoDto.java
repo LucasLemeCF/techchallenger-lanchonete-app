@@ -5,8 +5,9 @@ import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
+import lombok.Getter;
 
-
+@Getter
 public class PedidoDto {
     
     private String cpfCliente;
@@ -24,24 +25,12 @@ public class PedidoDto {
         this.produtos = produtos;
     }
 
-    public String getCpfCliente() {
-        return cpfCliente;
-    }
-
     public void setCpfCliente(String cpfCliente) {
         this.cpfCliente = cpfCliente;
     }
 
-    public BigDecimal getValor() {
-        return valor;
-    }
-
     public void setValor(BigDecimal valor) {
         this.valor = valor;
-    }
-
-    public List<ComboDto> getProdutos() {
-        return produtos;
     }
 
     public void setProdutos(List<ComboDto> produtos) {

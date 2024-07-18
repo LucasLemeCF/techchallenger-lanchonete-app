@@ -40,7 +40,7 @@ public class PedidoController {
     @Operation(description = "Gera o pedido do cliente")
     @ApiResponse(responseCode = "200", description = "Sucesso", content = @Content(mediaType = "application/json" , schema = @Schema(implementation = PedidoDto.class)))
     @ApiResponse(responseCode = "400", description = "Dados inválidos")
-    public ResponseEntity<?> createPedidos(@RequestBody PedidoDto pedidoDto) {
+    public ResponseEntity<?> createPedido(@RequestBody PedidoDto pedidoDto) {
         try{
             PedidoResponseDto savedPedido = pedidoService.save(pedidoDto);
             return ResponseEntity.ok(savedPedido);
