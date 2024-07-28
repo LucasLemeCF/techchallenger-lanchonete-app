@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "categoria")
+@Table(name = "tb_categoria")
 public class CategoriaEntity {
     @Id
     @Column(name = "id")

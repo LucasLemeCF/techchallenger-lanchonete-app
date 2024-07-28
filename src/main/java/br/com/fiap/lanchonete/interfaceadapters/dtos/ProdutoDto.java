@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
+import lombok.Getter;
 
+@Getter
 public class ProdutoDto {
 
     private static final Integer ID_CATEGORIA_LANCHE = 1;
@@ -67,48 +69,24 @@ public class ProdutoDto {
         return Optional.ofNullable(categoria).map(CategoriaDto::getId).orElse(-1).equals(ID_CATEGORIA_SOBREMESA);
     }
 
-    public String getId() {
-        return id;
-    }
-
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
     }
 
     public void setNome(String nome) {
         this.nome = nome;
     }
 
-    public String getDescricao() {
-        return descricao;
-    }
-
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-
-    public BigDecimal getPreco() {
-        return preco;
     }
 
     public void setPreco(BigDecimal preco) {
         this.preco = preco;
     }
 
-    public CategoriaDto getCategoria() {
-        return categoria;
-    }
-
     public void setCategoria(CategoriaDto categoria) {
         this.categoria = categoria;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
     }
 
     public void setAtivo(boolean ativo) {

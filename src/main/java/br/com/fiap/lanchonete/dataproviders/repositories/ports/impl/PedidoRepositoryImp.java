@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import br.com.fiap.lanchonete.infrastructure.database.repositories.PedidoJpaRepository;
+import br.com.fiap.lanchonete.infrastructure.exceptions.ObjectNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,4 +125,14 @@ public class PedidoRepositoryImp implements PedidoRepositoryPort {
                     .map(PedidoResponseMapper::map)
                     .toList();
     }
+
+    @Override
+    public PedidoResponseDto findById(String id) {
+        PedidoEntity pedidoEntity = pedidoJpaRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Pedido não encontrado! Id: " + id));
+
+        return PedidoResponseMapper.map(pedidoEntity);
+
+    }
+
 }

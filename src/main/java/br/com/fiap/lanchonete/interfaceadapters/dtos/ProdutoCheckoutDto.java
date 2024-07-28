@@ -3,7 +3,9 @@ package br.com.fiap.lanchonete.interfaceadapters.dtos;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
 
+@Getter
 public class ProdutoCheckoutDto {
 
     private String id;
@@ -23,16 +25,8 @@ public class ProdutoCheckoutDto {
 
     public ProdutoCheckoutDto() {}
 
-    public String getId() {
-        return id;
-    }
-
     public void setId(String id) {
         this.id = id;
-    }
-
-    public BigDecimal getPreco() {
-        return preco;
     }
 
     public void setPreco(BigDecimal preco) {

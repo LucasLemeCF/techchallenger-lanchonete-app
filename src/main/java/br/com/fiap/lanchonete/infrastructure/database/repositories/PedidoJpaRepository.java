@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.UUID;
 
-public interface PedidoJpaRepository extends JpaRepository<PedidoEntity, UUID> {
+public interface PedidoJpaRepository extends JpaRepository<PedidoEntity, String> {
 
     @Query("SELECT p FROM PedidoEntity p join fetch p.produtos prod order by p.dataHora")
     List<PedidoEntity> findAllComProdutos();

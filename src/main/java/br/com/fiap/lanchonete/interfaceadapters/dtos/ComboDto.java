@@ -7,8 +7,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
+import lombok.Getter;
 
-
+@Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ComboDto {
 
@@ -58,40 +59,20 @@ public class ComboDto {
         return Optional.ofNullable(sobremesa).map(ProdutoCheckoutDto::getId).isPresent();
     }
 
-    public int getComboNum() {
-        return comboNum;
-    }
-
     public void setComboNum(int comboNum) {
         this.comboNum = comboNum;
-    }
-
-    public ProdutoCheckoutDto getLanche() {
-        return lanche;
     }
 
     public void setLanche(ProdutoCheckoutDto lanche) {
         this.lanche = lanche;
     }
 
-    public ProdutoCheckoutDto getAcompanhamento() {
-        return acompanhamento;
-    }
-
     public void setAcompanhamento(ProdutoCheckoutDto acompanhamento) {
         this.acompanhamento = acompanhamento;
     }
 
-    public ProdutoCheckoutDto getBebida() {
-        return bebida;
-    }
-
     public void setBebida(ProdutoCheckoutDto bebida) {
         this.bebida = bebida;
-    }
-
-    public ProdutoCheckoutDto getSobremesa() {
-        return sobremesa;
     }
 
     public void setSobremesa(ProdutoCheckoutDto sobremesa) {

@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.fiap.lanchonete.core.entities.enums.StatusPedido;
+import lombok.Getter;
 
+@Getter
 public class PedidoResponseDto {
 
     private String id;
@@ -38,48 +40,24 @@ public class PedidoResponseDto {
         this.produtos = produtos;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public void setId(String id) {
         this.id = id;
-    }
-
-    public ClienteDto getCliente() {
-        return cliente;
     }
 
     public void setCliente(ClienteDto cliente) {
         this.cliente = cliente;
     }
 
-    public BigDecimal getValor() {
-        return valor;
-    }
-
     public void setValor(BigDecimal valor) {
         this.valor = valor;
-    }
-
-    public LocalDateTime getDataHora() {
-        return dataHora;
     }
 
     public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
     }
 
-    public StatusPedido getStatus() {
-        return status;
-    }
-
     public void setStatus(StatusPedido status) {
         this.status = status;
-    }
-
-    public List<PedidoProdutoDto> getProdutos() {
-        return produtos;
     }
 
     public void setProdutos(List<PedidoProdutoDto> produtos) {

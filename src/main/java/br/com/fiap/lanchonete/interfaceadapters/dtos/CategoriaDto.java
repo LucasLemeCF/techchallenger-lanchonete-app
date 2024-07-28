@@ -1,6 +1,9 @@
 package br.com.fiap.lanchonete.interfaceadapters.dtos;
 
 
+import lombok.Getter;
+
+@Getter
 public class CategoriaDto {
     private Integer id;
     private String nome;
@@ -13,15 +16,11 @@ public class CategoriaDto {
     public static Builder builder() {
         return new Builder();
     }
-    public Integer getId() {
-        return id;
-    }
+
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getNome() {
-        return nome;
-    }
+
     public void setNome(String nome) {
         this.nome = nome;
     }
