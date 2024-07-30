@@ -50,12 +50,12 @@ public class PedidoServiceImpl implements PedidoServicePort {
                 .stream()
                 .filter(pedido -> pedido.getStatus() != StatusPedido.FINALIZADO)
                 .sorted(Comparator.comparing((PedidoResponseDto pedido) -> {
-                    switch (pedido.getStatus()) {
-                        case PRONTO: return 1;
-                        case EM_PREPARACAO: return 2;
-                        case RECEBIDO: return 3;
-                        default: return 4;
-                    }
+                    return switch (pedido.getStatus()) {
+                        case PRONTO -> 1;
+                        case EM_PREPARACAO -> 2;
+                        case RECEBIDO -> 3;
+                        default -> 4;
+                    };
                 }).thenComparing(PedidoResponseDto::getDataHora))
                 .collect(Collectors.toList());
     }
