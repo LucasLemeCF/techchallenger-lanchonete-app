@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "tb_pedido")
+@Table(name = "pedido")
 public class PedidoEntity {
 
     @Id

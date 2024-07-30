@@ -64,7 +64,12 @@ public class PedidoServiceImpl implements PedidoServicePort {
         var clienteEntity = validarCliente(pedidoDto);
 
         for (var p : Optional.ofNullable(pedidoDto.getProdutos()).orElse(Collections.emptyList())) {
-            ComboDto combo = ComboDto.builder().build();
+            ComboDto combo = ComboDto.builder()
+                    .lanche(p.getLanche())
+                    .sobremesa(p.getSobremesa())
+                    .bebida(p.getBebida())
+                    .acompanhamento(p.getAcompanhamento())
+                    .build();
             var lancheOptional = combo.possuiLanche() ? produtoService.findByIdProduto(combo.getLanche().getId()) : Optional.empty();
             var sobremesaOptional = combo.possuiSobremesa() ? produtoService.findByIdProduto(combo.getSobremesa().getId()) : Optional.empty();
             var bebidaOptional = combo.possuiBebida() ? produtoService.findByIdProduto(combo.getBebida().getId()) : Optional.empty();

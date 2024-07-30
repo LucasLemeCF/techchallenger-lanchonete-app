@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "tb_cliente")
+@Table(name = "cliente")
 public class ClienteEntity {
     @Id
     @Column(name = "cpf", nullable = false)
