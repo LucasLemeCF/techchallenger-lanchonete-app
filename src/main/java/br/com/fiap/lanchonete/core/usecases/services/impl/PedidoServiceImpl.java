@@ -16,9 +16,11 @@ import br.com.fiap.lanchonete.dataproviders.repositories.ports.ProdutoRepository
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class PedidoServiceImpl implements PedidoServicePort {
 
@@ -41,7 +43,21 @@ public class PedidoServiceImpl implements PedidoServicePort {
     }
     @Override
     public List<PedidoResponseDto> findAllComProdutos() {
-        return pedidoRepository.findAllComProdutos();
+
+        List<PedidoResponseDto> lista = pedidoRepository.findAllComProdutos();
+
+        return lista
+                .stream()
+                .filter(pedido -> pedido.getStatus() != StatusPedido.FINALIZADO)
+                .sorted(Comparator.comparing((PedidoResponseDto pedido) -> {
+                    switch (pedido.getStatus()) {
+                        case PRONTO: return 1;
+                        case EM_PREPARACAO: return 2;
+                        case RECEBIDO: return 3;
+                        default: return 4;
+                    }
+                }).thenComparing(PedidoResponseDto::getDataHora))
+                .collect(Collectors.toList());
     }
 
     @Override
