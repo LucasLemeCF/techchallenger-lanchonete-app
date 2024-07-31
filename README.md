@@ -1,21 +1,31 @@
 
 # Tech Challenge - FIAP
 O projeto lanchonete foi desenvolvido para aplicar os conceitos aprendidos no curso de pós graduação em arquitetura de software da faculdade FIAP, esses conceitos consistem no desenvolvimento a partir do refinamento utilizando a metodologia de eventstorm (DDD), aplicando a arquitetura hexagonal e o docker.
-Toda a documentação DDD do Event Storm para o refinamento se encontra disponível no [miro](https://miro.com/app/board/uXjVKC2h5jE=/).
 
-## Autores
-Turma: 7 SOAT.
-- [@pinheirojks](https://github.com/pinheirojks)
-- [@legasrossini](https://github.com/legasrossini)
-- [@maurimurakami](https://github.com/maurimurakami)
-- [@Piovezan1207](https://github.com/Piovezan1207)
+## Integrantes do Grupo 70
+Felipe Cesar Sepulvida Rampazzo -
+ff.cc.ss.rr@gmail.com
+
+Francisco de Souza Filho -
+frandesoufil@gmail.com
+
+Gabriel Garcia Da Silva -
+gsilva.gabriel@outlook.com
+
+Douglas Legas Rossini -
+dlegasr@gmail.com
+
+Lucas Leme Cardoso Ferreira -
+lucasleme09@gmail.com 
 
 # Tecnologias utilizadas
 * A aplicação foi desenvolvida utilizando Java 17, framework Spring Boot, com a utilização do banco de dados MySql. Além disso foi utilizado o Docker para a execução da aplicação e do banco de dados e o Swagger para a documentação da API.
 
 # Premissas para a execução do projeto.
 * Ter o [docker](https://www.docker.com/products/docker-desktop/) instalado na máquina.
-* Realizar o checkout da branch [Main](https://github.com/legasrossini/techchallenger-lanchonete).
+* Ter o [kubernetes](https://kubernetes.io/docs/tasks/tools/) instalado na máquina.
+* Ter o [minikube](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2Fchocolatey) instalado na máquina.
+* Realizar o checkout da branch [Main]((https://github.com/fransoufil/techchallenger-lanchonete)).
 
 # Passo a passo para a execução do projeto.
 * Após o checkout da branch Main, acessar a raiz do projeto "techchallenger-lanchonete" onde se encontra o arquivo docker-compose.yml.
@@ -24,6 +34,9 @@ Turma: 7 SOAT.
 * A aplicação estará disponível para testes na interface do Swagger, acessível em [localhost:8080/swagger-ui.html](localhost:8080/swagger-ui.html).
 * Como a aplicação foi desenvolvida utilizando o framework Spring Boot e MySql dentro do Docker, pode levar um tempo de inicialização um pouco mais longo, pois a aplicação aguarda que o banco esteja dísponivel para ser iniciada. Após a execução do comando `docker-compose up`, aguardar alguns minutos até que a aplicação esteja disponível.
 * Para encerrar a execução da aplicação, basta executar o comando `docker-compose down`.
+
+# Como rodar pelo kubernetes
+* Documentação: [Link](https://github.com/fransoufil/techchallenger-lanchonete/pull/1)
 
 # Funcionalidades
 - Cadastro de clientes
